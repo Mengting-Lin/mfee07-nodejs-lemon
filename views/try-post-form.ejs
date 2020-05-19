@@ -1,0 +1,62 @@
+<%- include('parts/html-head') %>
+
+<%- include('parts/navbar') %>
+
+<div class="container">
+    <form method="post">
+        <div class="form-group">
+            <label for="email">Email address</label>
+            <input type="text" class="form-control" id="email" name="email">
+            <% if(typeof email!=='undefined'){ %>
+            <small>上次輸入的: <%= email %></small>
+            <% } %>
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" class="form-control" id="password" name="password">
+            <% if(!! locals.password){ %>
+            <small>上次輸入的: <%= password %></small>
+            <% } %>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+
+    <div id="info"></div>
+    <button onclick="doAjax()">ajax send</button>
+</div>
+<%- include('parts/scripts') %>
+<script>
+
+    // 方法1：post
+    // function doAjax(){
+
+    //     $.post('/try-json-post', $('form').serialize(), function(data){  // serialize：將資料轉為url格式
+    //         info.innerHTML = data;
+    //     }, 'text');
+    // }
+
+    // 方法2：fetch
+    function doAjax(){
+
+        const data = {
+            email: $('#email').val(),
+            password: password.value,
+        }
+
+        fetch('/try-json-post', {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(r=>r.text())
+        .then(txt=>{
+            info.innerHTML = txt;
+        })
+
+    }
+
+</script>
+<%- include('parts/html-foot') %>

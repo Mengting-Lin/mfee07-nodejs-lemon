@@ -11,4 +11,9 @@ class Person {
     return JSON.stringify(obj);
     }
     }
-    module.exports = Person;
+
+    // 一般
+    // module.exports = Person;
+
+    // babel語法
+    export default Person;
