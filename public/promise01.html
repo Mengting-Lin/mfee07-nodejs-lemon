@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="info">
+        <p>test promise</p>
+    </div>
+
+    <script>
+
+        // promise
+        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/Promise
+
+        function func() {
+            return new Promise((resolve, reject) => {
+                setTimeout(function () {
+                    resolve(Math.random())
+                }, 500)
+            })
+        }
+
+        func()
+            .then(r => {
+                info.innerHTML += `<p>${r}</p>`;
+                return func();
+            })
+            .then(r => {
+                document.getElementById('info').innerHTML += `<p>${r}</p>`;
+                return func();
+            })
+
+
+        const str = '{"a":1,"b":"david"}';
+
+        console.log('aaaa')
+        let obj = {};
+        try {
+            obj = JSON.parse(str)
+            console.log('---', obj)
+        } catch (ex) {
+            console.log('ex:', ex)
+        }
+        console.log(obj)
+
+    </script>
+</body>
+
+</html>
