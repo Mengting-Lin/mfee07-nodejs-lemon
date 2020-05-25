@@ -1,3 +1,4 @@
+// mysql2套件
 const mysql = require('mysql2');
 
 const pool = mysql.createPool({

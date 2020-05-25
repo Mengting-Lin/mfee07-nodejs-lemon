@@ -7,36 +7,41 @@
             </div>
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">新增資料</h5>
+                    <h5 class="card-title">修改資料</h5>
 
                     <form name="form1" onsubmit="return checkForm()">
                         <div class="form-group">
+                            <input type="text" class="form-control" id="sid" name="sid"
+                                   value="<%= sid %>" readonly>
                             <label for="name">Name</label>
-                            <input type="text" class="form-control" id="name" name="name" required>
+                            <input type="text" class="form-control" id="name" name="name"
+                                   value="<%= name %>"
+                                   required>
                         </div>
                         <div class="form-group">
                             <label for="email">Email address</label>
-                            <input type="email" class="form-control" id="email" name="email">
+                            <input type="email" class="form-control" id="email" name="email"
+                                   value="<%= email %>">
                         </div>
                         <div class="form-group">
                             <label for="mobile">Mobile</label>
                             <input type="text" class="form-control" id="mobile" name="mobile"
+                                   value="<%= mobile %>"
                                    pattern="09\d{2}-?\d{3}-?\d{3}">
                         </div>
                         <div class="form-group">
                             <label for="birthday">Birthday</label>
-                            <input type="text" class="form-control" id="birthday" name="birthday">
+                            <input type="text" class="form-control" id="birthday" name="birthday"
+                                   value="<%= birthday %>">
                         </div>
                         <div class="form-group">
                             <label for="address">Address</label>
                             <textarea class="form-control" id="address" name="address"
-                                      cols="30" rows="3" required></textarea>
+                                      cols="30" rows="3" required><%= address %></textarea>
                         </div>
 
                         <button type="submit" class="btn btn-primary">Submit</button>
                     </form>
-
-
                 </div>
             </div>
         </div>
@@ -50,7 +55,7 @@
         // TODO: 檢查欄位值的格式
 
         const fd = new FormData(document.form1);
-        fetch('/address-book/add',{
+        fetch('/address-book/edit',{
             method: "POST",
             body: fd
         })
@@ -61,15 +66,17 @@
                 infobar
                     .removeClass('alert-danger')
                     .addClass('alert-success')
-                    .text('新增成功');
+                    .text('修改成功');
                 setTimeout(()=>{
                     infobar.slideUp();
+                    // history.back();   回到上一頁，有快取，非正規作法
+                    // location.href = '/address-book/editor';
                 }, 1000);
             } else {
                 infobar
                     .removeClass('alert-success')
                     .addClass('alert-danger')
-                    .text('新增失敗');
+                    .text('沒有修改');
                 setTimeout(()=>{
                     infobar.slideUp();
                 }, 1000);

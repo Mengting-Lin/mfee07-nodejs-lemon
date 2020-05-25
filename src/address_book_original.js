@@ -9,7 +9,7 @@
 
 // module.exports = router;
 
-const express = require('express');
+const express = require('express');                // express已經包含body-parser
 const moment = require('moment-timezone');
 const db = require(__dirname + '/db_connect2');
 
