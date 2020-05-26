@@ -2,7 +2,7 @@
 <%- include('../parts/navbar') %>
 <style>
     .table a .fa-trash-alt {
-        color: lightcoral;
+        color: #890b0b;
     }
 </style>
 <div class="container">
@@ -31,60 +31,27 @@
     <table class="table table-striped">
         <thead>
         <tr>
-            <th scope="col"><i class="fas fa-trash-alt"></i></th>
             <th scope="col">sid</th>
             <th scope="col">name</th>
             <th scope="col">email</th>
             <th scope="col">mobile</th>
             <th scope="col">birthday</th>
             <th scope="col">address</th>
-            <th scope="col"><i class="fas fa-edit"></i></th>
         </tr>
         </thead>
         <tbody>
         <% for(let i of rows){ %>
         <tr>
-            <!--            作法1-->
-            <!--            <td>-->
-            <!--                <a href="javascript:del_it(<%= i.sid %>)"><i class="fas fa-trash-alt"></i></a>-->
-            <!--            </td>-->
-            <!--            作法2-->
-            <td>
-                <a href="/address-book/del/<%= i.sid %>" onclick="doDel(event, <%= i.sid %>)"><i class="fas fa-trash-alt"></i></a>
-            </td>
             <td><%= i.sid %></td>
             <td><%= i.name %></td>
             <td><%= i.email %></td>
             <td><%= i.mobile %></td>
             <td><%= i.birthday %></td>
             <td><%= i.address %></td>
-            <td>
-                <a href="/address-book/edit/<%= i.sid %>"><i class="fas fa-edit"></i></a>
-            </td>
         </tr>
         <% } %>
         </tbody>
     </table>
 </div>
 <%- include('../parts/scripts') %>
-<script>
-
-    // 在前端頁面印出接收的JSON
-    const trytry = <%- JSON.stringify(sess) %>;
-
-    function del_it(sid){
-        if(confirm(`你確定要刪除編號為 ${sid} 的資料嗎?`)){
-            location.href = '/address-book/del/' +sid;
-        } else {
-            this.preventDefault();  // 阻止冒泡
-        }
-    }
-
-    function doDel(event, sid){
-        if(! confirm(`你確定要刪除編號為 ${sid} 的資料嗎?`)){
-            event.preventDefault();
-        }
-    }
-
-</script>
 <%- include('../parts/html-foot') %>

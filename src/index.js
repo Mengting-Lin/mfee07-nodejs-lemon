@@ -1,24 +1,55 @@
 const express = require('express');
 const app = express();
 const session = require('express-session');
+const MysqlStore = require('express-mysql-session')(session);
+const db = require(__dirname + '/db_connect2');
 const multer = require('multer');
 const upload = require(__dirname + '/upload-module');
 const moment = require('moment-timezone');
+const cors = require('cors');
+// cors session
+const whitelist = [undefined, 'http://localhost:5500', 'http://127.0.0.1:5500', 'http://localhost:63342']
+const corsOptions = {
+    credentials: true,
+    origin: function(origin, cb){
+        console.log(origin);
+        if(whitelist.indexOf(origin) !== -1){
+            cb(null, true);
+        } else {
+            cb(null, false);
+        }
+    }
+};
 
 // 註冊ejs引擎
 app.set('view engine', 'ejs')
 // 設定views路徑
 app.set('views',__dirname+'/../views')
 
-// login
+// cors
+app.use(cors(corsOptions));
+
+// cors session
+const sessionStore = new MysqlStore({}, db);
 app.use(session({
     saveUninitialized: false,
     resave: false,
     secret: 'dolkidf;lalsdfjls',
+    store: sessionStore,
     cookie: {
         maxAge: 1200000
     }
 }));
+
+// login
+// app.use(session({
+//     saveUninitialized: false,
+//     resave: false,
+//     secret: 'dolkidf;lalsdfjls',
+//     cookie: {
+//         maxAge: 1200000
+//     }
+// }));
 app.use((req, res, next)=>{
     res.locals.sess = req.session || {};
     // res.locals.customData = {
@@ -162,15 +193,15 @@ app.get('/try-moment', (req, res)=> {
 //         maxAge: 1200000
 //     }
 // }));
-// app.get('/try-session', (req, res)=>{
-//     req.session.my_var = req.session.my_var || 0;
-//     req.session.my_var++;
+app.get('/try-session', (req, res)=>{
+    req.session.my_var = req.session.my_var || 0;
+    req.session.my_var++;
 
-//     res.json({
-//         my_var: req.session.my_var,
-//         session: req.session
-//     })
-// })
+    res.json({
+        my_var: req.session.my_var,
+        session: req.session
+    })
+})
 
 
 // top-level middleware

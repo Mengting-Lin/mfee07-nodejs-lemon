@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div id="info"></div>
+
+
+<script>
+
+    fetch('http://localhost:3001/try-session',{
+        credentials: 'include'
+        // include：不论是不是跨域的请求,总是发送请求资源域在本地的 cookies、 HTTP Basic authentication 等验证信息
+    })
+    .then(r=>r.json())
+    .then(obj=>{
+        console.log(obj);
+        info.innerHTML = JSON.stringify(obj.my_var)
+    })
+
+
+</script>
+</body>
+</html>

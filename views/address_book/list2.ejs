@@ -1,0 +1,109 @@
+<%- include('../parts/html-head') %>
+<%- include('../parts/navbar') %>
+<style>
+    .table a .fa-trash-alt {
+        color: lightcoral;
+    }
+</style>
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+<!--                    <li class="page-item ">-->
+<!--                        <a class="page-link" href="#1"><i class="fas fa-arrow-circle-left"></i></a>-->
+<!--                    </li>-->
+
+                        <li class="page-item ">
+                            <a class="page-link" href="#2">1</a>
+                        </li>
+
+<!--                    <li class="page-item ">-->
+<!--                        <a class="page-link" href="#3"><i class="fas fa-arrow-circle-right"></i></a>-->
+<!--                    </li>-->
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col">sid</th>
+            <th scope="col">name</th>
+            <th scope="col">email</th>
+            <th scope="col">mobile</th>
+            <th scope="col">birthday</th>
+            <th scope="col">address</th>
+        </tr>
+        </thead>
+        <tbody id="dataBody">
+
+        </tbody>
+    </table>
+</div>
+<%- include('../parts/scripts') %>
+<script>
+
+    const dataBody = $('#dataBody');
+    const pagination = $('.pagination');
+
+    const paginationTpl =(obj)=>{
+        const active = obj.active ? 'active' : '';
+        return `<li class="page-item ${active}">
+                <a class="page-link" href="#${obj.page}">${obj.page}</a>
+            </li>`;
+
+    }
+
+    const dataRowTpl = (obj)=>{
+        return `<tr>
+            <td>${obj.sid}</td>
+            <td>${obj.name}</td>
+            <td>${obj.email}</td>
+            <td>${obj.mobile}</td>
+            <td>${obj.birthday}</td>
+            <td>${obj.address}</td>
+        </tr>`;
+    }
+
+    const getDataFromHash = ()=>{
+        let h = location.hash.slice(1) || 1;
+
+        fetch('/address-book/api/list/' + h)
+        .then(r=>r.json())
+        .then(obj=>{
+            console.log(obj);
+
+            let str = '';
+
+            // pagination
+            pagination.empty();
+            for(let i=1; i<=obj.totalPages; i++){
+                str += paginationTpl({
+                    page: i,
+                    active: h==i
+                })
+            }
+            pagination.append(str);
+
+            // table
+            dataBody.empty();
+            str = ''
+            for(let i of obj.rows){
+                str += dataRowTpl(i);
+            }
+            dataBody.append(str);
+        })
+    };
+
+    window.addEventListener('hashchange', (event)=>{
+        getDataFromHash();
+    });
+
+    getDataFromHash();
+
+
+</script>
+<%- include('../parts/html-foot') %>

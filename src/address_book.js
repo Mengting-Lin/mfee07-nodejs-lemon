@@ -5,10 +5,62 @@ const db = require(__dirname + '/db_connect2');         // 資料庫連線
 
 const router = express.Router();                        // router ??
 
+// 擋住無確實登入者動到通訊錄
+router.use((req, res, next)=>{
+    const white = ['list', 'login', 'list2', 'api'];
+    let u = req.url.split('/')[1];
+    u = u.split('?')[0];
+
+    if(!req.session.admin){
+        if(white.indexOf(u) !==-1){
+            next();
+        } else {
+            res.status(403).send('叫你滾就滾~');
+        }
+    } else {
+        next();
+    }
+});
+
 // 根目錄
 router.get('/', (req, res)=>{
     res.redirect(req.baseUrl + '/list');
 });
+
+// 登入頁面
+router.get('/login', (req, res)=>{
+    if(req.session.admin){
+        res.redirect('/address-book/list');
+    } else {
+        res.render('address_book/login');
+    }
+});
+router.post('/login', upload.none(), (req, res)=>{
+    const output = {
+        body: req.body,
+        success: false
+    }
+    //res.render('address-book/login');
+    const sql = "SELECT `sid`, `account` FROM admins WHERE account=? AND password=SHA1(?)";
+    db.query(sql, [req.body.account, req.body.password])
+        .then(([r])=>{
+            if(r && r.length){
+                req.session.admin = r[0];  // r[0]= `sid`, `account`
+                output.success = true;
+            }
+            res.json(output);
+        })
+
+    //res.json(req.body);
+});
+
+// 登出頁面
+
+router.get('/logout', (req, res)=>{
+    delete req.session.admin;
+    res.redirect('/address-book/list');
+});
+
 
 // 刪除資料頁面
 router.get('/del/:sid', (req, res)=>{
@@ -123,10 +175,19 @@ const getDataList = async (req)=>{
     return output;
 };
 
+
 router.get('/list/:page?', async (req, res)=>{
     const output = await getDataList(req);
-    res.render('address_book/list', output);
+    if(req.session.admin)
+        res.render('address_book/list', output);
+    else
+        res.render('address_book/list-no-admin', output);
 })
+
+router.get('/list2', async (req, res)=>{
+    res.render('address_book/list2');
+})
+
 router.get('/api/list/:page?', async (req, res)=>{
     const output = await getDataList(req);
     res.json(output);
